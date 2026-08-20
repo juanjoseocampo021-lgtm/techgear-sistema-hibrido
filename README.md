@@ -17,6 +17,7 @@ El proyecto está dividido en dos componentes principales:
 - Motor
 - MongoDB Atlas
 - Django
+- Requests
 - Uvicorn
 
 ## Requisitos

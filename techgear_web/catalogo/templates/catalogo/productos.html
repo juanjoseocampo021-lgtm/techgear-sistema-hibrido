@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>TechGear - Catálogo</title>
+
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'catalogo/css/productos.css' %}">
+</head>
+
+<body>
+
+    <header class="encabezado">
+        <h1>TechGear</h1>
+        <p>Catálogo de productos tecnológicos</p>
+    </header>
+
+    <main class="contenedor">
+
+        <h2>Productos disponibles</h2>
+
+        <section class="productos">
+
+            {% for producto in productos %}
+
+            <article class="producto">
+
+                <h2>{{ producto.nombre }}</h2>
+
+                <p class="descripcion">
+                    {{ producto.descripcion }}
+                </p>
+
+                <span class="categoria">
+                    {{ producto.categoria }}
+                </span>
+
+                <p class="precio">
+                    ${{ producto.precio }}
+                </p>
+
+                <p class="stock">
+                    Stock disponible: {{ producto.stock }}
+                </p>
+
+            </article>
+
+            {% empty %}
+
+            <p>No hay productos disponibles.</p>
+
+            {% endfor %}
+
+        </section>
+
+    </main>
+
+</body>
+
+</html>
