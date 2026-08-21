@@ -1,13 +1,14 @@
-import os
 import requests
+
+from django.conf import settings
 from django.shortcuts import render
 
 
 def productos(request):
 
-    api_url = os.getenv("API_URL", "http://127.0.0.1:8000")
-
-    respuesta = requests.get(f"{api_url}/productos/")
+    respuesta = requests.get(
+        f"{settings.API_URL}/productos/"
+    )
 
     productos = respuesta.json()
 
