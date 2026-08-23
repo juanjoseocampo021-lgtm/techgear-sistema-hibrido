@@ -27,8 +27,9 @@ SECRET_KEY = 'django-insecure-+y9t3&k#11&elv#g&fjtk)8yo+k2ipkk-$8g$-v0hd%b&==tcz
 
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = [
+    "techgear-web-dzdz.onrender.com",
+]
 
 # URL de la API FastAPI.
 # Localmente usa FastAPI en el puerto 8000.
