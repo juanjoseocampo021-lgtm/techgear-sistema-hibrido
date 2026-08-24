@@ -1,3 +1,5 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="es">
 
@@ -7,20 +9,38 @@
 
     <title>TechGear - Catálogo</title>
 
-    {% load static %}
     <link rel="stylesheet" href="{% static 'catalogo/css/productos.css' %}">
 </head>
 
 <body>
 
     <header class="encabezado">
-        <h1>TechGear</h1>
-        <p>Catálogo de productos tecnológicos</p>
+        <div class="encabezado-contenido">
+            <h1>TechGear</h1>
+            <p>Catálogo de productos tecnológicos</p>
+        </div>
     </header>
+
 
     <main class="contenedor">
 
-        <h2>Productos disponibles</h2>
+        <section class="introduccion">
+            <h2>Productos disponibles</h2>
+            <p>
+                Explora nuestro catálogo de hardware
+                y accesorios tecnológicos.
+            </p>
+        </section>
+
+
+        {% if error_api %}
+
+        <div class="mensaje-error">
+            {{ error_api }}
+        </div>
+
+        {% endif %}
+
 
         <section class="productos">
 
@@ -28,35 +48,69 @@
 
             <article class="producto">
 
-                <h2>{{ producto.nombre }}</h2>
+                <div class="producto-contenido">
 
-                <p class="descripcion">
-                    {{ producto.descripcion }}
-                </p>
+                    <span class="categoria">
+                        {{ producto.categoria }}
+                    </span>
 
-                <span class="categoria">
-                    {{ producto.categoria }}
-                </span>
+                    <h3>
+                        {{ producto.nombre }}
+                    </h3>
 
-                <p class="precio">
-                    ${{ producto.precio }}
-                </p>
+                    <p class="descripcion">
+                        {{ producto.descripcion }}
+                    </p>
 
-                <p class="stock">
-                    Stock disponible: {{ producto.stock }}
-                </p>
+                    <p class="precio">
+                        ${{ producto.precio|floatformat:0 }}
+                    </p>
+
+                    {% if producto.stock > 0 %}
+
+                    <p class="stock disponible">
+                        Stock disponible:
+                        {{ producto.stock }}
+                    </p>
+
+                    {% else %}
+
+                    <p class="stock agotado">
+                        Producto agotado
+                    </p>
+
+                    {% endif %}
+
+                </div>
 
             </article>
 
             {% empty %}
 
-            <p>No hay productos disponibles.</p>
+            {% if not error_api %}
+
+            <div class="sin-productos">
+                <p>
+                    No hay productos disponibles
+                    en este momento.
+                </p>
+            </div>
+
+            {% endif %}
 
             {% endfor %}
 
         </section>
 
     </main>
+
+
+    <footer class="pie-pagina">
+        <p>
+            TechGear &copy; 2026 -
+            Sistema Híbrido de Catálogo y Pedidos
+        </p>
+    </footer>
 
 </body>
 
