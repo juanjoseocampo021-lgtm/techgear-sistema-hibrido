@@ -1,32 +1,31 @@
 import requests
 
 from django.conf import settings
-from django.shortcuts import render
+from django.shortcuts import redirect, render
+
+from .forms import PedidoForm
 
 
 def productos(request):
     """
-    Obtiene el catálogo de productos desde la API FastAPI
-    y lo envía al template de Django.
+    Obtiene los productos desde FastAPI y los muestra
+    en el catálogo de Django.
     """
 
     productos_data = []
     error_api = None
 
     try:
-        respuesta = requests.get(
+        response = requests.get(
             f"{settings.API_URL}/productos/",
             timeout=10,
         )
-
-        respuesta.raise_for_status()
-
-        productos_data = respuesta.json()
+        response.raise_for_status()
+        productos_data = response.json()
 
     except requests.RequestException:
         error_api = (
-            "No fue posible obtener los productos "
-            "desde la API."
+            "No fue posible obtener los productos desde la API."
         )
 
     return render(
@@ -35,5 +34,101 @@ def productos(request):
         {
             "productos": productos_data,
             "error_api": error_api,
+        },
+    )
+
+
+def checkout(request, producto_id):
+    """
+    Muestra el formulario de pedido para un producto
+    y registra el pedido mediante FastAPI.
+    """
+
+    try:
+        response = requests.get(
+            f"{settings.API_URL}/productos/{producto_id}",
+            timeout=10,
+        )
+        response.raise_for_status()
+        producto = response.json()
+
+    except requests.RequestException:
+        return redirect("productos")
+
+    if request.method == "POST":
+        form = PedidoForm(request.POST)
+
+        if form.is_valid():
+            cantidad = form.cleaned_data["cantidad"]
+
+            pedido = {
+                "cliente": {
+                    "nombre": form.cleaned_data["nombre"],
+                    "identificacion": form.cleaned_data[
+                        "identificacion"
+                    ],
+                    "telefono": form.cleaned_data["telefono"],
+                },
+                "productos": [
+                    {
+                        "producto_id": producto_id,
+                        "cantidad": cantidad,
+                    }
+                ],
+                "total": producto["precio"] * cantidad,
+                "estado": "pendiente",
+            }
+
+            try:
+                response = requests.post(
+                    f"{settings.API_URL}/pedidos/",
+                    json=pedido,
+                    timeout=10,
+                )
+                response.raise_for_status()
+
+                return render(
+                    request,
+                    "catalogo/checkout.html",
+                    {
+                        "producto": producto,
+                        "form": PedidoForm(),
+                        "mensaje": "Pedido registrado correctamente.",
+                    },
+                )
+
+            except requests.RequestException as exc:
+                error = (
+                    "No fue posible registrar el pedido. "
+                    "Verifica que la API esté disponible."
+                )
+
+                if exc.response is not None:
+                    try:
+                        detalle = exc.response.json().get("detail")
+                        if detalle:
+                            error = detalle
+                    except ValueError:
+                        pass
+
+                return render(
+                    request,
+                    "catalogo/checkout.html",
+                    {
+                        "producto": producto,
+                        "form": form,
+                        "error": error,
+                    },
+                )
+
+    else:
+        form = PedidoForm()
+
+    return render(
+        request,
+        "catalogo/checkout.html",
+        {
+            "producto": producto,
+            "form": form,
         },
     )

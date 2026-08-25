@@ -73,6 +73,10 @@
                         {{ producto.stock }}
                     </p>
 
+                    <a href="{% url 'checkout' producto.id %}" class="boton-principal">
+                        Comprar
+                    </a>
+
                     {% else %}
 
                     <p class="stock agotado">

@@ -65,10 +65,13 @@ async def crear_pedido(pedido: Pedido):
 
     pedido_dict = pedido.model_dump(exclude={"id"})
 
-    # Validar que los productos existan
+    # -----------------------------------------------------
+    # Validar productos y stock
+    # -----------------------------------------------------
     for producto in pedido_dict["productos"]:
 
         producto_id = producto["producto_id"]
+        cantidad = producto["cantidad"]
 
         # Validar formato del ID
         if not ObjectId.is_valid(producto_id):
@@ -88,7 +91,51 @@ async def crear_pedido(pedido: Pedido):
                 detail=f"Producto no encontrado: {producto_id}"
             )
 
+        # Validar stock disponible
+        stock_actual = producto_existente.get("stock", 0)
+
+        if cantidad > stock_actual:
+            raise HTTPException(
+                status_code=400,
+                detail=(
+                    f"Stock insuficiente para el producto "
+                    f"'{producto_existente.get('nombre', producto_id)}'. "
+                    f"Stock disponible: {stock_actual}"
+                )
+            )
+
+    # -----------------------------------------------------
+    # Descontar stock
+    # -----------------------------------------------------
+    for producto in pedido_dict["productos"]:
+
+        producto_id = producto["producto_id"]
+        cantidad = producto["cantidad"]
+
+        resultado_stock = await productos_collection.update_one(
+            {
+                "_id": ObjectId(producto_id),
+                "stock": {"$gte": cantidad}
+            },
+            {
+                "$inc": {
+                    "stock": -cantidad
+                }
+            }
+        )
+
+        if resultado_stock.modified_count == 0:
+            raise HTTPException(
+                status_code=400,
+                detail=(
+                    "No fue posible actualizar el stock. "
+                    "Es posible que el stock haya cambiado."
+                )
+            )
+
+    # -----------------------------------------------------
     # Guardar pedido
+    # -----------------------------------------------------
     resultado = await pedidos_collection.insert_one(pedido_dict)
 
     # Recuperar pedido creado

@@ -2,7 +2,6 @@
     box-sizing: border-box;
 }
 
-
 body {
     margin: 0;
     font-family: Arial, sans-serif;
@@ -12,6 +11,10 @@ body {
 }
 
 
+/* =========================================================
+   ENCABEZADO
+   ========================================================= */
+
 .encabezado {
     background-color: #1f2937;
     color: white;
@@ -19,24 +22,25 @@ body {
     text-align: center;
 }
 
-
 .encabezado-contenido {
     max-width: 1100px;
     margin: 0 auto;
 }
-
 
 .encabezado h1 {
     margin: 0;
     font-size: 36px;
 }
 
-
 .encabezado p {
     margin: 10px 0 0;
     font-size: 17px;
 }
 
+
+/* =========================================================
+   CONTENEDOR
+   ========================================================= */
 
 .contenedor {
     width: 90%;
@@ -45,139 +49,417 @@ body {
 }
 
 
+/* =========================================================
+   INTRODUCCIÓN
+   ========================================================= */
+
 .introduccion {
-    margin-bottom: 25px;
+    margin-bottom: 30px;
 }
 
-
 .introduccion h2 {
-    margin-bottom: 8px;
+    margin: 0 0 8px;
     font-size: 28px;
     color: #111827;
 }
 
-
 .introduccion p {
-    margin-top: 0;
+    margin: 0;
     color: #6b7280;
+    line-height: 1.5;
 }
 
+
+/* =========================================================
+   TARJETAS DE PRODUCTOS
+   ========================================================= */
 
 .productos {
     display: grid;
-    grid-template-columns:
-        repeat(auto-fit, minmax(250px, 1fr));
-    gap: 25px;
+    grid-template-columns: repeat(auto-fit,
+            minmax(260px, 1fr));
+    gap: 28px;
 }
 
-
 .producto {
+    display: flex;
+    flex-direction: column;
     background-color: white;
-    border-radius: 12px;
-    padding: 22px;
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    padding: 24px;
+    min-height: 360px;
+
     box-shadow:
-        0 4px 12px rgba(0, 0, 0, 0.08);
+        0 4px 12px rgba(0, 0, 0, 0.06);
 
     transition:
         transform 0.2s ease,
-        box-shadow 0.2s ease;
+        box-shadow 0.2s ease,
+        border-color 0.2s ease;
 }
-
 
 .producto:hover {
-    transform: translateY(-4px);
+    transform: translateY(-5px);
+
+    border-color: #d1d5db;
 
     box-shadow:
-        0 8px 20px rgba(0, 0, 0, 0.12);
+        0 10px 25px rgba(0, 0, 0, 0.10);
 }
 
-
 .producto-contenido {
+    display: flex;
+    flex-direction: column;
     height: 100%;
 }
 
 
+/* =========================================================
+   CATEGORÍA
+   ========================================================= */
+
 .categoria {
+    align-self: flex-start;
+
     display: inline-block;
-    background-color: #e5e7eb;
+
+    background-color: #f3f4f6;
     color: #374151;
+
     padding: 6px 11px;
-    border-radius: 15px;
-    font-size: 13px;
-    margin-bottom: 12px;
+    border-radius: 20px;
+
+    font-size: 12px;
+    font-weight: bold;
+
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+
+    margin-bottom: 15px;
 }
 
+
+/* =========================================================
+   INFORMACIÓN DEL PRODUCTO
+   ========================================================= */
 
 .producto h3 {
     margin: 0 0 12px;
-    color: #1f2937;
-    font-size: 22px;
-    line-height: 1.2;
-}
 
+    color: #111827;
+
+    font-size: 22px;
+    line-height: 1.3;
+}
 
 .descripcion {
     color: #6b7280;
-    line-height: 1.5;
-    min-height: 48px;
-}
 
+    line-height: 1.55;
+
+    min-height: 72px;
+
+    margin: 0;
+}
 
 .precio {
-    font-size: 23px;
+    font-size: 25px;
     font-weight: bold;
+
     color: #111827;
-    margin: 18px 0 12px;
+
+    margin: 20px 0 10px;
 }
 
+
+/* =========================================================
+   STOCK
+   ========================================================= */
 
 .stock {
+    font-size: 14px;
     font-weight: bold;
-    margin-bottom: 0;
-}
 
+    margin: 0 0 20px;
+}
 
 .disponible {
     color: #15803d;
 }
-
 
 .agotado {
     color: #dc2626;
 }
 
 
+/* =========================================================
+   BOTONES
+   ========================================================= */
+
+.boton-principal,
+.boton-secundario {
+    display: inline-block;
+
+    border-radius: 8px;
+
+    font-weight: bold;
+    text-decoration: none;
+
+    cursor: pointer;
+
+    transition:
+        background-color 0.2s ease,
+        transform 0.2s ease;
+}
+
+.boton-principal {
+    width: 100%;
+
+    border: none;
+
+    padding: 14px 20px;
+
+    background-color: #1f2937;
+    color: white;
+
+    font-size: 15px;
+
+    margin-top: auto;
+}
+
+.boton-principal:hover {
+    background-color: #111827;
+    transform: translateY(-1px);
+}
+
+.boton-secundario {
+    padding: 10px 16px;
+
+    background-color: white;
+    color: #1f2937;
+
+    font-size: 14px;
+
+    margin-top: 18px;
+}
+
+.boton-secundario:hover {
+    background-color: #e5e7eb;
+}
+
+
+/* =========================================================
+   MENSAJES
+   ========================================================= */
+
 .mensaje-error {
     background-color: #fee2e2;
     color: #991b1b;
+
     border: 1px solid #fecaca;
     border-radius: 8px;
+
     padding: 14px 18px;
+
     margin-bottom: 25px;
 }
 
+.mensaje-exito {
+    background-color: #dcfce7;
+    color: #166534;
+
+    border: 1px solid #bbf7d0;
+    border-radius: 8px;
+
+    padding: 14px 18px;
+
+    margin-bottom: 25px;
+}
 
 .sin-productos {
     background-color: white;
+
     border-radius: 10px;
+
     padding: 25px;
+
     text-align: center;
+
     color: #6b7280;
 }
 
 
+/* =========================================================
+   CHECKOUT
+   ========================================================= */
+
+.checkout-contenedor {
+    max-width: 760px;
+}
+
+.checkout-card {
+    background-color: white;
+
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+
+    padding: 32px;
+
+    box-shadow:
+        0 8px 25px rgba(0, 0, 0, 0.08);
+}
+
+.checkout-titulo {
+    margin-bottom: 25px;
+}
+
+.checkout-titulo h2 {
+    margin: 0 0 8px;
+
+    color: #111827;
+
+    font-size: 30px;
+}
+
+.checkout-titulo p {
+    margin: 0;
+
+    color: #6b7280;
+
+    line-height: 1.5;
+}
+
+.producto-resumen {
+    background-color: #f8fafc;
+
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+
+    padding: 22px;
+
+    margin-bottom: 25px;
+}
+
+.producto-resumen h3 {
+    margin: 4px 0 10px;
+
+    color: #1f2937;
+
+    font-size: 24px;
+}
+
+.producto-resumen .descripcion {
+    min-height: auto;
+
+    margin-bottom: 12px;
+}
+
+.producto-resumen .precio {
+    margin: 12px 0;
+}
+
+.producto-resumen .stock {
+    margin: 0;
+}
+
+
+/* =========================================================
+   FORMULARIO
+   ========================================================= */
+
+.formulario-checkout {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.campo-formulario {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.campo-formulario label {
+    font-weight: bold;
+
+    color: #374151;
+
+    font-size: 15px;
+}
+
+.form-control {
+    width: 100%;
+
+    padding: 12px 14px;
+
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+
+    background-color: white;
+    color: #111827;
+
+    font-size: 15px;
+    font-family: inherit;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.form-control:focus {
+    outline: none;
+
+    border-color: #374151;
+
+    box-shadow:
+        0 0 0 3px rgba(55, 65, 81, 0.12);
+}
+
+.errores-formulario {
+    color: #b91c1c;
+
+    font-size: 14px;
+}
+
+.errores-formulario ul {
+    margin: 4px 0 0;
+
+    padding-left: 20px;
+}
+
+
+/* =========================================================
+   PIE DE PÁGINA
+   ========================================================= */
+
 .pie-pagina {
     text-align: center;
+
     padding: 30px 20px;
+
     color: #6b7280;
+
     font-size: 14px;
 }
 
 
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
 @media (max-width: 600px) {
+
+    .encabezado {
+        padding: 25px 15px;
+    }
 
     .encabezado h1 {
         font-size: 30px;
+    }
+
+    .encabezado p {
+        font-size: 15px;
     }
 
     .contenedor {
@@ -187,9 +469,35 @@ body {
 
     .productos {
         grid-template-columns: 1fr;
+        gap: 20px;
+    }
+
+    .producto {
+        min-height: auto;
+        padding: 22px;
     }
 
     .introduccion h2 {
         font-size: 24px;
+    }
+
+    .checkout-card {
+        padding: 22px;
+    }
+
+    .checkout-titulo h2 {
+        font-size: 25px;
+    }
+
+    .producto-resumen {
+        padding: 18px;
+    }
+
+    .producto-resumen h3 {
+        font-size: 21px;
+    }
+
+    .boton-secundario {
+        display: inline-block;
     }
 }

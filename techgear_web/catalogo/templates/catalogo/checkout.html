@@ -1,0 +1,165 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Checkout | TechGear</title>
+
+    <link rel="stylesheet" href="{% static 'catalogo/css/productos.css' %}">
+</head>
+
+<body>
+
+    <header class="encabezado">
+        <div class="contenedor encabezado-contenido">
+            <div>
+                <h1>TechGear</h1>
+                <p>Finaliza tu pedido de forma rápida y sencilla</p>
+            </div>
+
+            <a href="{% url 'productos' %}" class="boton-secundario">
+                ← Volver al catálogo
+            </a>
+        </div>
+    </header>
+
+
+    <main class="contenedor checkout-contenedor">
+
+        <section class="checkout-card">
+
+            <div class="checkout-titulo">
+                <h2>Finalizar pedido</h2>
+                <p>
+                    Completa tus datos y selecciona la cantidad que deseas comprar.
+                </p>
+            </div>
+
+
+            <div class="producto-resumen">
+
+                <span class="categoria">
+                    {{ producto.categoria }}
+                </span>
+
+                <h3>{{ producto.nombre }}</h3>
+
+                <p class="descripcion">
+                    {{ producto.descripcion }}
+                </p>
+
+                <p class="precio">
+                    ${{ producto.precio|floatformat:0 }}
+                </p>
+
+                <p class="stock disponible">
+                    Stock disponible: {{ producto.stock }}
+                </p>
+
+            </div>
+
+
+            {% if mensaje %}
+            <div class="mensaje-exito">
+                {{ mensaje }}
+            </div>
+            {% endif %}
+
+
+            {% if error %}
+            <div class="mensaje-error">
+                {{ error }}
+            </div>
+            {% endif %}
+
+
+            <form method="post" class="formulario-checkout">
+
+                {% csrf_token %}
+
+
+                <div class="campo-formulario">
+
+                    <label for="{{ form.nombre.id_for_label }}">
+                        {{ form.nombre.label }}
+                    </label>
+
+                    {{ form.nombre }}
+
+                    {% if form.nombre.errors %}
+                    <div class="errores-formulario">
+                        {{ form.nombre.errors }}
+                    </div>
+                    {% endif %}
+
+                </div>
+
+
+                <div class="campo-formulario">
+
+                    <label for="{{ form.identificacion.id_for_label }}">
+                        {{ form.identificacion.label }}
+                    </label>
+
+                    {{ form.identificacion }}
+
+                    {% if form.identificacion.errors %}
+                    <div class="errores-formulario">
+                        {{ form.identificacion.errors }}
+                    </div>
+                    {% endif %}
+
+                </div>
+
+
+                <div class="campo-formulario">
+
+                    <label for="{{ form.telefono.id_for_label }}">
+                        {{ form.telefono.label }}
+                    </label>
+
+                    {{ form.telefono }}
+
+                    {% if form.telefono.errors %}
+                    <div class="errores-formulario">
+                        {{ form.telefono.errors }}
+                    </div>
+                    {% endif %}
+
+                </div>
+
+
+                <div class="campo-formulario">
+
+                    <label for="{{ form.cantidad.id_for_label }}">
+                        {{ form.cantidad.label }}
+                    </label>
+
+                    {{ form.cantidad }}
+
+                    {% if form.cantidad.errors %}
+                    <div class="errores-formulario">
+                        {{ form.cantidad.errors }}
+                    </div>
+                    {% endif %}
+
+                </div>
+
+
+                <button type="submit" class="boton-principal">
+                    Confirmar pedido
+                </button>
+
+            </form>
+
+        </section>
+
+    </main>
+
+</body>
+
+</html>
