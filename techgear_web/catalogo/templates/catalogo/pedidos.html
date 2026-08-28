@@ -1,0 +1,299 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>TechGear - Pedidos</title>
+
+    <link rel="stylesheet" href="{% static 'catalogo/css/productos.css' %}">
+</head>
+
+<body>
+
+    <!-- =====================================================
+         ENCABEZADO
+         ===================================================== -->
+
+    <header class="encabezado">
+
+        <div class="encabezado-contenido">
+
+            <h1>TechGear - Catálogo</h1>
+
+            <nav class="navegacion">
+
+                <a href="{% url 'productos' %}">
+                    Catálogo
+                </a>
+
+                <a href="{% url 'pedidos' %}">
+                    Ver Pedidos
+                </a>
+
+                <a href="/admin/">
+                    Panel Admin
+                </a>
+
+                <a href="{{ request.scheme }}://{{ request.get_host|cut:':8001' }}:8000/docs">
+                    API Swagger
+                </a>
+
+            </nav>
+
+        </div>
+
+    </header>
+
+
+    <!-- =====================================================
+         CONTENIDO PRINCIPAL
+         ===================================================== -->
+
+    <main class="contenedor">
+
+        <section class="introduccion">
+
+            <h2>Pedidos registrados</h2>
+
+            <p>
+                Consulta los pedidos registrados
+                mediante la API de TechGear.
+            </p>
+
+        </section>
+
+
+        <!-- =================================================
+             ERROR DE API
+             ================================================= -->
+
+        {% if error_api %}
+
+        <div class="mensaje-error">
+            {{ error_api }}
+        </div>
+
+        {% endif %}
+
+
+        <!-- =================================================
+             LISTA DE PEDIDOS
+             ================================================= -->
+
+        {% if pedidos %}
+
+        <section class="lista-pedidos">
+
+            {% for pedido in pedidos %}
+
+            <article class="pedido-card">
+
+
+                <!-- =========================================
+                     CABECERA DEL PEDIDO
+                     ========================================= -->
+
+                <div class="pedido-cabecera">
+
+                    <div>
+
+                        <span class="pedido-etiqueta">
+                            Pedido registrado
+                        </span>
+
+                        <h3>
+                            #{{ pedido.id }}
+                        </h3>
+
+                    </div>
+
+
+                    <span class="estado-pedido">
+                        {{ pedido.estado|title }}
+                    </span>
+
+                </div>
+
+
+                <!-- =========================================
+                     INFORMACIÓN DEL CLIENTE Y TOTAL
+                     ========================================= -->
+
+                <div class="pedido-datos">
+
+
+                    <!-- CLIENTE -->
+
+                    <div class="pedido-dato">
+
+                        <span class="pedido-dato-label">
+                            Cliente
+                        </span>
+
+
+                        {% if pedido.cliente.nombre %}
+
+                        <div class="cliente-informacion">
+
+                            <div class="cliente-campo">
+
+                                <span>
+                                    Nombre
+                                </span>
+
+                                <strong>
+                                    {{ pedido.cliente.nombre }}
+                                </strong>
+
+                            </div>
+
+
+                            <div class="cliente-campo">
+
+                                <span>
+                                    Identificación
+                                </span>
+
+                                <strong>
+                                    {{ pedido.cliente.identificacion }}
+                                </strong>
+
+                            </div>
+
+
+                            <div class="cliente-campo">
+
+                                <span>
+                                    Teléfono
+                                </span>
+
+                                <strong>
+                                    {{ pedido.cliente.telefono }}
+                                </strong>
+
+                            </div>
+
+                        </div>
+
+                        {% else %}
+
+                        <!--
+                            Pedidos antiguos que solamente
+                            guardaban el nombre del cliente.
+                        -->
+
+                        <div class="cliente-antiguo">
+
+                            <strong>
+                                {{ pedido.cliente }}
+                            </strong>
+
+                        </div>
+
+                        {% endif %}
+
+                    </div>
+
+
+                    <!-- TOTAL -->
+
+                    <div class="pedido-dato">
+
+                        <span class="pedido-dato-label">
+                            Total del pedido
+                        </span>
+
+                        <span class="pedido-dato-valor pedido-total">
+                            ${{ pedido.total|floatformat:0 }}
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =========================================
+                     PRODUCTOS DEL PEDIDO
+                     ========================================= -->
+
+                <div class="pedido-productos">
+
+                    <h4>
+                        Productos del pedido
+                    </h4>
+
+
+                    {% for producto in pedido.productos %}
+
+                    <div class="pedido-producto">
+
+                        <div class="pedido-producto-info">
+
+                            <span class="pedido-producto-label">
+                                Producto
+                            </span>
+
+                            <span class="pedido-producto-id">
+                                {{ producto.producto_id }}
+                            </span>
+
+                        </div>
+
+
+                        <span class="pedido-producto-cantidad">
+                            Cantidad: {{ producto.cantidad }}
+                        </span>
+
+                    </div>
+
+                    {% endfor %}
+
+                </div>
+
+            </article>
+
+            {% endfor %}
+
+        </section>
+
+
+        {% elif not error_api %}
+
+        <!-- =================================================
+             SIN PEDIDOS
+             ================================================= -->
+
+        <div class="sin-productos">
+
+            <p>
+                No hay pedidos registrados
+                en este momento.
+            </p>
+
+        </div>
+
+        {% endif %}
+
+    </main>
+
+
+    <!-- =====================================================
+         PIE DE PÁGINA
+         ===================================================== -->
+
+    <footer class="pie-pagina">
+
+        <p>
+            TechGear &copy; 2026 -
+            Sistema Híbrido de Catálogo y Pedidos
+        </p>
+
+    </footer>
+
+</body>
+
+</html>

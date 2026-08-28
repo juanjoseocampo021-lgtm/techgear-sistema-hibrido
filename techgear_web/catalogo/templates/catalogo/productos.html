@@ -15,10 +15,41 @@
 <body>
 
     <header class="encabezado">
+
         <div class="encabezado-contenido">
-            <h1>TechGear</h1>
-            <p>Catálogo de productos tecnológicos</p>
+
+            <div class="barra-superior">
+
+                <h1>TechGear - Catálogo</h1>
+
+                <nav class="navegacion">
+
+                    <a href="{% url 'productos' %}">
+                        Catálogo
+                    </a>
+
+                    <a href="{% url 'pedidos' %}">
+                        Ver Pedidos
+                    </a>
+
+                    <a href="/admin/">
+                        Panel Admin
+                    </a>
+
+                    <a href="{{ settings.API_URL }}/docs">
+                        API Swagger
+                    </a>
+
+                </nav>
+
+            </div>
+
+            <p>
+                Catálogo de productos tecnológicos
+            </p>
+
         </div>
+
     </header>
 
 

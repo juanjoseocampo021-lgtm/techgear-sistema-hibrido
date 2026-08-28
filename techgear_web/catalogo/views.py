@@ -132,3 +132,36 @@ def checkout(request, producto_id):
             "form": form,
         },
     )
+def pedidos(request):
+    """
+    Obtiene los pedidos registrados desde FastAPI
+    y los muestra en el portal Django.
+    """
+
+    pedidos_data = []
+    error_api = None
+
+    try:
+        respuesta = requests.get(
+            f"{settings.API_URL}/pedidos/",
+            timeout=10,
+        )
+
+        respuesta.raise_for_status()
+
+        pedidos_data = respuesta.json()
+
+    except requests.RequestException:
+        error_api = (
+            "No fue posible obtener los pedidos "
+            "desde la API."
+        )
+
+    return render(
+        request,
+        "catalogo/pedidos.html",
+        {
+            "pedidos": pedidos_data,
+            "error_api": error_api,
+        },
+    )
