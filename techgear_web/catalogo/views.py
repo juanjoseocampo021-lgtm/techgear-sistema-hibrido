@@ -69,6 +69,7 @@ def productos(request):
         {
             "productos": productos_data,
             "error_api": error_api,
+            "api_url": settings.API_URL,
         },
     )
 
