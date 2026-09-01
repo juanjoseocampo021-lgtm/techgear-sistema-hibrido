@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException
 from bson import ObjectId
 
 from techgear_api.database import pedidos_collection, productos_collection
-from techgear_api.models.pedido import Pedido
+from techgear_api.models.pedido import Pedido, PedidoActualizacion
 
 
 router = APIRouter(
@@ -154,3 +154,123 @@ async def crear_pedido(pedido: Pedido):
     del pedido_creado["_id"]
 
     return pedido_creado
+
+
+# ---------------------------------------------------------
+# PATCH - Actualizar estado del pedido
+# ---------------------------------------------------------
+@router.patch("/{pedido_id}")
+async def actualizar_pedido(
+    pedido_id: str,
+    actualizacion: PedidoActualizacion
+):
+
+    # Validar ID
+    if not ObjectId.is_valid(pedido_id):
+        raise HTTPException(
+            status_code=400,
+            detail="ID de pedido no válido"
+        )
+
+    # Verificar que exista el pedido
+    pedido_existente = await pedidos_collection.find_one(
+        {"_id": ObjectId(pedido_id)}
+    )
+
+    if pedido_existente is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Pedido no encontrado"
+        )
+
+    # Actualizar solamente el estado
+    resultado = await pedidos_collection.update_one(
+        {"_id": ObjectId(pedido_id)},
+        {
+            "$set": {
+                "estado": actualizacion.estado
+            }
+        }
+    )
+
+    if resultado.modified_count == 0:
+        raise HTTPException(
+            status_code=400,
+            detail="No fue posible actualizar el pedido"
+        )
+
+    # Recuperar pedido actualizado
+    pedido_actualizado = await pedidos_collection.find_one(
+        {"_id": ObjectId(pedido_id)}
+    )
+
+    pedido_actualizado["id"] = str(pedido_actualizado["_id"])
+    del pedido_actualizado["_id"]
+
+    return pedido_actualizado
+
+
+# ---------------------------------------------------------
+# DELETE - Eliminar pedido
+# ---------------------------------------------------------
+@router.delete("/{pedido_id}")
+async def eliminar_pedido(pedido_id: str):
+
+    # Validar ID
+    if not ObjectId.is_valid(pedido_id):
+        raise HTTPException(
+            status_code=400,
+            detail="ID de pedido no válido"
+        )
+
+    # Buscar pedido
+    pedido_existente = await pedidos_collection.find_one(
+        {"_id": ObjectId(pedido_id)}
+    )
+
+    if pedido_existente is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Pedido no encontrado"
+        )
+
+    # -----------------------------------------------------
+    # Restaurar stock de los productos del pedido
+    # -----------------------------------------------------
+    for producto in pedido_existente.get("productos", []):
+
+        producto_id = producto.get("producto_id")
+        cantidad = producto.get("cantidad", 0)
+
+        if not ObjectId.is_valid(producto_id):
+            continue
+
+        if cantidad <= 0:
+            continue
+
+        await productos_collection.update_one(
+            {"_id": ObjectId(producto_id)},
+            {
+                "$inc": {
+                    "stock": cantidad
+                }
+            }
+        )
+
+    # -----------------------------------------------------
+    # Eliminar pedido
+    # -----------------------------------------------------
+    resultado = await pedidos_collection.delete_one(
+        {"_id": ObjectId(pedido_id)}
+    )
+
+    if resultado.deleted_count == 0:
+        raise HTTPException(
+            status_code=404,
+            detail="No fue posible eliminar el pedido"
+        )
+
+    return {
+        "mensaje": "Pedido eliminado correctamente",
+        "pedido_id": pedido_id
+    }

@@ -20,3 +20,7 @@ class Pedido(BaseModel):
     productos: List[ProductoPedido]
     total: float = Field(..., gt=0)
     estado: str = "pendiente"
+
+
+class PedidoActualizacion(BaseModel):
+    estado: str = Field(..., min_length=3, max_length=30)
